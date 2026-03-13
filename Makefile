@@ -1,4 +1,5 @@
 GEN_DIR := internal/agent/pb
+OPENSSL := $(shell command -v openssl 2>/dev/null || command -v openssl11)
 
 .PHONY: clean
 clean:
@@ -42,11 +43,11 @@ int:
 	docker compose up --build --force-recreate --exit-code-from playwright
 
 shared_key.pem:
-	@openssl genpkey -algorithm Ed25519 -out shared_key.pem
+	@$(OPENSSL) genpkey -algorithm Ed25519 -out shared_key.pem
 
 shared_cert.pem: shared_key.pem
-	@openssl req -new -key shared_key.pem -out shared_request.csr -subj "/C=US/ST=California/L=San Francisco/O=Dozzle"
-	@openssl x509 -req -in shared_request.csr -signkey shared_key.pem -out shared_cert.pem -days 1825
+	@$(OPENSSL) req -new -key shared_key.pem -out shared_request.csr -subj "/C=US/ST=California/L=San Francisco/O=Dozzle"
+	@$(OPENSSL) x509 -req -in shared_request.csr -signkey shared_key.pem -out shared_cert.pem -days 1825
 	@rm shared_request.csr
 
 .PHONY: push

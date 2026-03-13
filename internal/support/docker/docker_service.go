@@ -18,13 +18,14 @@ type DockerClientService struct {
 	store  *container.ContainerStore
 }
 
-func NewDockerClientService(client container.Client, labels container.ContainerLabels) *DockerClientService {
+func newDockerClientService(client container.Client, labels container.ContainerLabels) *DockerClientService {
 	statsCollector := docker.NewDockerStatsCollector(client, labels)
 	return &DockerClientService{
 		client: client,
 		store:  container.NewContainerStore(context.Background(), client, statsCollector, labels),
 	}
 }
+
 
 func (d *DockerClientService) RawLogs(ctx context.Context, container container.Container, from time.Time, to time.Time, stdTypes container.StdType) (io.ReadCloser, error) {
 	reader, err := d.client.ContainerLogsBetweenDates(ctx, container.ID, from, to, stdTypes)

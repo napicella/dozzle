@@ -60,6 +60,7 @@ func main() {
 	defer stop()
 
 	var hostService web.HostService
+	log.Info().Msgf("Running dozzle in mode: %s\n", args.Mode)
 	if args.Mode == "server" {
 		multiHostService := cli.CreateMultiHostService(certs, args)
 		if multiHostService.TotalClients() == 0 {
