@@ -52,12 +52,17 @@ RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache
 
 RUN mkdir /data
 
-FROM scratch
+FROM debian:bookworm-slim
 
 COPY --from=builder /data /data
 COPY --from=builder /tmp /tmp
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /dozzle/dozzle /dozzle
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends systemd \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8080
 
