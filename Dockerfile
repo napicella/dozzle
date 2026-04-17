@@ -25,7 +25,7 @@ RUN pnpm build
 FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 
 RUN apk add --no-cache ca-certificates && mkdir /dozzle
-
+ENV GOPROXY=direct
 WORKDIR /dozzle
 
 # Copy go mod files
@@ -48,7 +48,7 @@ ARG TARGETOS TARGETARCH
 
 # Build binary
 RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache/go-build \
-  GOPROXY=direct GOEXPERIMENT=jsonv2 GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/amir20/dozzle/internal/support/cli.Version=$TAG" -o dozzle
+  GOEXPERIMENT=jsonv2 GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 go build -ldflags "-s -w -X github.com/amir20/dozzle/internal/support/cli.Version=$TAG" -o dozzle
 
 RUN mkdir /data
 
