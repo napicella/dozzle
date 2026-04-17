@@ -24,7 +24,7 @@ RUN pnpm build
 
 FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 
-RUN apk add --no-cache ca-certificates && mkdir /dozzle
+RUN apk add --no-cache ca-certificates git && mkdir /dozzle
 ENV GOPROXY=direct
 WORKDIR /dozzle
 
